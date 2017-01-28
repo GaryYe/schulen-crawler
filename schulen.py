@@ -1,4 +1,5 @@
 import scrapy
+from utils import is_address, remove_white
 
 
 class SchulenSpider(scrapy.Spider):
@@ -23,11 +24,20 @@ class SchulenSpider(scrapy.Spider):
         def extract_with_css(query):
             return response.css(query).extract_first()
 
+        address = None
+        for candidate in response.css('article p::text').extract():
+            candidate = remove_white(candidate)
+            if is_address(candidate):
+                if address is None:
+                    address = candidate
+                elif len(address) < len(candidate):
+                    address = candidate
+
         attributes = {
+            'name': extract_with_css('div[id="cms-content"] h1::text'),
+            'address': address,
             'email': extract_with_css('article p a[href*="mailto"]::text'),
             'homepage': extract_with_css('article p a[href*="http"]::text'),
-            'name': extract_with_css('div[id="cms-content"] h1::text'),
         }
 
         yield attributes
-
