@@ -27,14 +27,7 @@ class SchulenSpider(scrapy.Spider):
             'email': extract_with_css('article p a[href*="mailto"]::text'),
             'homepage': extract_with_css('article p a[href*="http"]::text'),
             'name': extract_with_css('div[id="cms-content"] h1::text'),
-
         }
 
         yield attributes
 
-        # result = dict()
-        # for k, v in attributes:
-        #     if v:
-        #         result[k] = v
-        #
-        # yield result
